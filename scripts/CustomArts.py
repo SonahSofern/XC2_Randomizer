@@ -159,7 +159,7 @@ def GenCustomArtDescriptions():
                     else:
                         for key,values in Reactions.items():
                             if art[f"ReAct{i}"] in values:
-                                reactionCaption += f"{key}/"
+                                reactionCaption += f"{key}->"
                                 break
                 reactionCaption = reactionCaption[:-1]
                 reactionCaption += " / "
