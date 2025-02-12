@@ -1,4 +1,5 @@
 import json, random
+from BladeRandomization import Replacement2Original
 
 # Lists of cosmetics to choose from
 ValidDriverCosmetics = []
@@ -113,7 +114,7 @@ BloodWitchNia = Cosmetic("pc/pc120201", 2, Nia, "Blood Witch Nia", Driver)
 # DefaultDriverNia = Cosmetic("pc/pc000201", 2, Nia, "Default Nia", Driver)
 
 
-def CosmeticPairs(nameData, itmData,odds, charKeyWord, cosmeticsList):
+def CosmeticPairs(nameData, itmData,odds, charKeyWord, cosmeticsList, optionDict):
     pairs = {}
     for Acc in itmData["rows"]:
         if (odds > random.randint(0,99)):
@@ -136,7 +137,10 @@ def CosmeticPairs(nameData, itmData,odds, charKeyWord, cosmeticsList):
                     break
                 
             Acc["Model"] = cosm.model
-            Acc[f"{charKeyWord}"] = cosm.characterID
+            if optionDict["Blades"]["optionTypeVal"].get() and cosm.characterID in Replacement2Original:
+                Acc[f"{charKeyWord}"] = Replacement2Original[cosm.characterID]
+            else:
+                Acc[f"{charKeyWord}"] = cosm.characterID
             
 def Cosmetics(optionDict):
     # Slider
@@ -148,7 +152,7 @@ def Cosmetics(optionDict):
             eqData = json.load(file)
             accNameData = json.load(nameFile)
             
-            CosmeticPairs(accNameData, eqData, odds, "Driver", ValidDriverCosmetics)
+            CosmeticPairs(accNameData, eqData, odds, "Driver", ValidDriverCosmetics, optionDict)
             
             nameFile.seek(0)
             nameFile.truncate()
@@ -163,7 +167,7 @@ def Cosmetics(optionDict):
             orbData = json.load(orbFile)
             nameData = json.load(nameFile)
             
-            CosmeticPairs(nameData,orbData,odds,"Blade", ValidBladeCosmetics)
+            CosmeticPairs(nameData,orbData,odds,"Blade", ValidBladeCosmetics, optionDict)
             
             nameFile.seek(0)
             nameFile.truncate()
@@ -179,7 +183,10 @@ def Cosmetics(optionDict):
             if (odds > random.randint(0,99)):
                 cosm:Cosmetic = random.choice(ValidArtificialBladeCosmetics) # these names are shared with regular ones so its not going to work to put poppi names on them when most cant equip those anyway
                 Acc["Model"] = cosm.model
-                Acc["Blade"] = cosm.characterID
+                if optionDict["Blades"]["optionTypeVal"].get() and cosm.characterID in Replacement2Original:
+                    Acc["Blade"] = Replacement2Original[cosm.characterID]
+                else:
+                    Acc["Blade"] = cosm.characterID
         file.seek(0)
         file.truncate()
         json.dump(eqData, file, indent=2, ensure_ascii=False)

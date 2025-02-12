@@ -1,3 +1,4 @@
+import copy
 import json, random, os, IDs
 
 def ChangeJSONFile(Filename: list, keyWords: list, rangeofValuesToReplace:list = [], rangeValidReplacements:list = [], InvalidTargetIDs:list = [], SliderOdds = 100, IgnoreID_AND_Key = [["",""]]): # make this a function to reuse, check the settings ot see if we even do this
@@ -76,6 +77,32 @@ def QueryJSONLine(filename, searchField, searchVal):
                     return item
         return None
 
+def CopyJSONFile(filename):
+    filePath = "./_internal/JsonOutputs/" + filename
+    if not os.path.exists(filePath):
+      return dict()
+    with open(filePath, 'r+', encoding='utf-8') as file:
+        data = json.load(file)
+        out = dict()
+        for item in data['rows']:
+            out[item['$id']] = dict()
+            for key, value in item.items():
+                if key == '$id':
+                    continue
+                out[item['$id']][key] = copy.deepcopy(value)
+        return out
+
+def PrintTable(filename):
+    print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+    print(filename)
+    filePath = "./_internal/JsonOutputs/" + filename
+    if not os.path.exists(filePath):
+        return
+    with open(filePath, 'r+', encoding='utf-8') as file:
+        data = json.load(file)
+        for item in data['rows']:
+            print(item)
+    print()
 
 def ExtendJSONFile(filePath, additionsList = []):
     with open("./_internal/JsonOutputs/" + filePath, 'r+', encoding='utf-8') as file:
