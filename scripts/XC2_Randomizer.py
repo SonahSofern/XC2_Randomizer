@@ -13,7 +13,7 @@ from UI_Colors import *
 from tkinter.font import Font
 import tkinter as tk
 
-Version = "UIOVERHAUL"
+Version = "1.3.0"
 CommonBdatInput = ""
 JsonOutput = "./_internal/JsonOutputs"
 MaxWidth = 1000
