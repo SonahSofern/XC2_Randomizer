@@ -62,11 +62,11 @@ def ChangeArts(artData, artNameData):
     newNameID = 457 # Starting id to add new names to old names file
     
     spinBox = Options.EnemyArtEffectsOption.GetOdds()
-    isReactions = Options.EnemyArtEffectsOption_Reactions.isOn()
-    isDebuffs = Options.EnemyArtEffectsOption_Debuffs.isOn()
-    isBuffs = Options.EnemyArtEffectsOption_Buffs.isOn()
-    isEnhancements = Options.EnemyArtEffectsOption_Enhancements.isOn()
-    isAOE = Options.EnemyArtEffectsOption_AOE.isOn()
+    isReactions = Options.EnemyArtEffectsOption_Reactions.GetState()
+    isDebuffs = Options.EnemyArtEffectsOption_Debuffs.GetState()
+    isBuffs = Options.EnemyArtEffectsOption_Buffs.GetState()
+    isEnhancements = Options.EnemyArtEffectsOption_Enhancements.GetState()
+    isAOE = Options.EnemyArtEffectsOption_AOE.GetState()
                     
     
     for art in artData["rows"]:

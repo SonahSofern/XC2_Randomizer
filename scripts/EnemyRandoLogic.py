@@ -369,11 +369,11 @@ def EnemyAggroProportion():
     if Options.UMHuntOption.GetState():
         return
     EnemyRandoOnBox = Options.EnemiesOption.GetState()
-    StoryBossesBox = Options.EnemiesOption_Bosses.isOn()
-    QuestEnemyBox = Options.EnemiesOption_QuestEnemies.isOn()
-    UniqueMonstersBox = Options.EnemiesOption_UniqueMonsters.isOn()
-    SuperbossesBox = Options.EnemiesOption_Superbosses.isOn()
-    NormalEnemiesBox = Options.EnemiesOption_NormalEnemies.isOn()
+    StoryBossesBox = Options.EnemiesOption_Bosses.GetState()
+    QuestEnemyBox = Options.EnemiesOption_QuestEnemies.GetState()
+    UniqueMonstersBox = Options.EnemiesOption_UniqueMonsters.GetState()
+    SuperbossesBox = Options.EnemiesOption_Superbosses.GetState()
+    NormalEnemiesBox = Options.EnemiesOption_NormalEnemies.GetState()
     if EnemyRandoOnBox:
         if StoryBossesBox or UniqueMonstersBox or SuperbossesBox or NormalEnemiesBox or QuestEnemyBox: # do nothing, got handled after enemy randomization
             pass
@@ -750,15 +750,15 @@ def EnemyLogic():
     LevelstoPass = []
     CheckboxList = [] #I'm lazy, so i'm just going to pass the names and true/false states to two arrays
     CheckboxStates = []
-    StoryBossesBox = Options.EnemiesOption_Bosses.isOn()
+    StoryBossesBox = Options.EnemiesOption_Bosses.GetState()
     # KeepStoryBossesLevelsBox = OptionsRunDict["Enemies"]["subOptionObjects"]["Use Original Boss Encounter Levels"]["subOptionTypeVal"].get()
-    QuestEnemyBox = Options.EnemiesOption_QuestEnemies.isOn()
+    QuestEnemyBox = Options.EnemiesOption_QuestEnemies.GetState()
     # KeepQuestEnemyLevelsBox = OptionsRunDict["Enemies"]["subOptionObjects"]["Use Original Quest Encounter Levels"]["subOptionTypeVal"].get()
-    UniqueMonstersBox = Options.EnemiesOption_UniqueMonsters.isOn()
-    SuperbossesBox = Options.EnemiesOption_Superbosses.isOn()
-    NormalEnemiesBox = Options.EnemiesOption_NormalEnemies.isOn()
-    KeepAllEnemyLevelsBox = Options.EnemiesOption_BalancedLevels.isOn()
-    MixEnemiesBetweenTypesBox = Options.EnemiesOption_MixedTypes.isOn()
+    UniqueMonstersBox = Options.EnemiesOption_UniqueMonsters.GetState()
+    SuperbossesBox = Options.EnemiesOption_Superbosses.GetState()
+    NormalEnemiesBox = Options.EnemiesOption_NormalEnemies.GetState()
+    KeepAllEnemyLevelsBox = Options.EnemiesOption_BalancedLevels.GetState()
+    MixEnemiesBetweenTypesBox = Options.EnemiesOption_MixedTypes.GetState()
     AllBossDefaultIDstoUse = AllBossDefaultIDs
     AllBossDefaultLevelstoUse = AllBossDefaultLevels
     if Options.RaceModeOption.GetState(): # removing malos in auresco fight for race mode specifically, he has an absurd amount of hp and is just a slog of a fight

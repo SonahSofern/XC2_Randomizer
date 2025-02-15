@@ -212,7 +212,7 @@ def RaceModeChanging():
     EnemyDropRemoval()
     EnemyRandoLogic.KeyItemsReAdd()
     CoreCrystalAdjustments.FieldSkillLevelAdjustment()
-    if Options.RaceModeOption_DLC.isOn():
+    if Options.RaceModeOption_DLC.GetState():
         print("Nerfing Corvin and Crossette")
         DLCItemChanges()
 
@@ -535,7 +535,7 @@ def RaceModeLootChanges(NGPlusBladeCrystalIDs):
                     file.seek(0)
                     file.truncate()
                     json.dump(data, file, indent=2, ensure_ascii=False)
-    if Options.RaceModeOption_Zohar.isOn(): 
+    if Options.RaceModeOption_Zohar.GetState(): 
         print("Shuffling in Zohar Fragments")
         ZoharFragmentHunt(TBoxFiles, BoxestoRandomizePerMap)
         
@@ -973,7 +973,7 @@ def WeaponChipShopPowerLevelIncrease(): # Common issue at start of run is first 
 
 def ChestTypeMatching():  # Chest type matches Contents
     RaceModeOn = Options.RaceModeOption.GetState()
-    ZoharFragOn = Options.RaceModeOption_Zohar.isOn()
+    ZoharFragOn = Options.RaceModeOption_Zohar.GetState()
     CoreCrystalRandoOn = Options.CustomCoreCrystalOption.GetState()
     ZoharFragItemIDs = [25135, 25136, 25137, 25138]
     CoreCrystalIDs = AllCoreCrystals

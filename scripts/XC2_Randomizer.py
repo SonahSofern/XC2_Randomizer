@@ -273,6 +273,7 @@ EntriesToSave = ([fileEnt, fileOut, permLink, seedVar])
 SavedOptions.loadData(EntriesToSave + Options.OptionList, SavedOptionsFileName)
 EveryObjectToSaveAndLoad = list((x.checkBoxVal for x in EntriesToSave)) + list((x.checkBoxVal for x in Options.OptionList)) + list((x.spinBoxVal for x in Options.OptionList)) + list((sub.checkBoxVal for x in Options.OptionList for sub in x.subOptions))
 
+
 # Permalink Options/Variables
 permalinkFrame = ttk.Frame(root,style="NoBackground.TFrame")
 permalinkEntry = ttk.Entry(permalinkFrame, width=MaxWidth, textvariable=permalinkVar)

@@ -114,7 +114,7 @@ class SubOption():
         self.parent = _parent
         _parent.subOptions.append(self)
 
-    def isOn(self):
+    def GetState(self):
         return self.checkBoxVal.get()
 rowIncrement = 0   
 OptionList:list[Option] = []
@@ -224,7 +224,7 @@ EnemiesOption_UniqueMonsters = SubOption("Unique Monsters", EnemiesOption)
 EnemiesOption_Superbosses = SubOption("Superbosses", EnemiesOption)
 EnemiesOption_NormalEnemies = SubOption("Normal Enemies", EnemiesOption)
 EnemiesOption_MixedTypes = SubOption("Mix Enemies Between Types", EnemiesOption)
-EnemiesOption_BalancedLevels = SubOption("Balanced Levels", EnemiesOption, _defState = False)
+EnemiesOption_BalancedLevels = SubOption("Balanced Levels", EnemiesOption)
 # EnemiesOption_Bosses = SubOption("Bosses", EnemiesOption) removed cause i dont want these options but it broke last time i tried to remove
 # EnemiesOption_Bosses = SubOption("Bosses", EnemiesOption)
 EnemyEnhancementsOption = Option("Enemy Enhancements", Enemies, "Gives enemies a random enhancement; displayed by their name", [lambda: _EnemyEnhancements.EnemyEnhances()], _hasSpinBox = True)
@@ -303,10 +303,8 @@ for opt in Cosmetics.CosmeticsList: # To gen these since listing them here would
 RaceModeOption = Option("Race Mode", GameModeTab, "Enables Race Mode (see the Race Mode README)", [lambda: RaceMode.RaceModeChanging(), RaceMode.SeedHash])
 RaceModeOption_Zohar = SubOption("Zohar Fragment Hunt", RaceModeOption)
 RaceModeOption_DLC = SubOption("DLC Item Removal", RaceModeOption)
-UMHuntOption = Option("Unique Monster Hunt", GameModeTab, "Experimental Mode", [lambda: UniqueMonsterHunt.UMHunt()], _hasSpinBox = True, _spinMin = 1, _spinMax = 10, _spinIncr = 1, _spinDesc = "Rounds:", _spinWidth = 2)
+UMHuntOption = Option("Unique Monster Hunt", GameModeTab, "Experimental Mode", [lambda: UniqueMonsterHunt.UMHunt()], _hasSpinBox = True, _spinMin = 1, _spinMax = 10, _spinIncr = 1, _spinDesc = "Round(s)", _spinWidth = 2)
 UMHuntOption_SuperbossWave = SubOption("Superboss Wave", UMHuntOption)
-#  spinMin = 1, spinMax = 10, spinStep = 1, spinBoxDescription = "Round(s):", spinBoxWidth = 2, spinBoxDescCol = 2, spinBoxObjCol = 3, spinBoxObjPadding = (0,0))
-
 
 # Currently Disabled for Various Reasons
 # Blade Names (moved so that blade name rando doesn't mess up Race Mode getting blade IDs)

@@ -1,11 +1,12 @@
-import json, random, Helper, IDs, EnemyRandoLogic, RaceMode, math
+import json, random, Helper, IDs, EnemyRandoLogic, RaceMode, math, Options
 from Enhancements import *
+from collections import OrderedDict
 
 #Keeping these 3 separate from the already existing IDs in EnemyRandoLogic in case I want to do some balancing or something
 AllUniqueMonsterDefaultIDs = [611, 612, 705, 706, 707, 708, 709, 710, 711, 712, 713, 715, 736, 738, 808, 809, 810, 811, 812, 814, 815, 816, 817, 819, 890, 891, 892, 893, 894, 895, 896, 898, 899, 926, 929, 953, 954, 955, 957, 958, 1019, 1020, 1023, 1025, 1026, 1101, 1102, 1104, 1106, 1108, 1109, 1111, 1112, 1113, 1114, 1115, 1131, 1132, 1134, 1155, 1156, 1157, 1181, 1182, 1183, 1184, 1185, 1186, 1187, 1188, 1255, 1256, 1258, 1260, 1261, 1262, 1264, 1265, 1563, 1564, 1566, 1567, 1657, 1658, 1659, 1660, 1661, 1662, 1663, 1664, 1665, 1666, 1667, 1670, 1774]
 AllSuperBossDefaultIDs = [247, 714, 928, 1022, 1027, 1110, 1135, 1137, 1189, 1559, 1560, 1561, 1562, 1723, 1756, 1758, 1759, 1763, 1765, 1766, 1767, 1768, 1769, 1770, 1771, 1772, 1773, 1775, 1776, 1777, 1778, 1779, 1783, 1784, 1785, 1786, 1792, 1793, 1794, 1795, 1800, 1802, 1803, 1804, 1808, 1809, 1811, 1812, 1813, 1814, 1886]
-AllNormalEnemyDefaultIDs = [313, 315, 339, 413, 474, 476, 521, 523, 555, 568, 630, 631, 632, 633, 634, 637, 638, 643, 645, 646, 647, 648, 651, 652, 653, 654, 655, 656, 657, 658, 659, 660, 662, 664, 665, 666, 668, 670, 672, 674, 675, 676, 678, 679, 680, 681, 682, 683, 684, 685, 686, 687, 688, 689, 691, 692, 693, 694, 695, 696, 699, 701, 703, 716, 717, 718, 719, 720, 721, 722, 723, 729, 730, 731, 732, 733, 734, 735, 745, 749, 754, 756, 757, 758, 762, 763, 764, 766, 769, 770, 771, 772, 773, 774, 776, 777, 793, 794, 795, 796, 798, 800, 802, 804, 806, 825, 835, 836, 843, 844, 845, 847, 849, 850, 851, 852, 853, 854, 855, 856, 857, 858, 859, 860, 861, 862, 863, 864, 865, 866, 867, 868, 869, 870, 871, 872, 873, 874, 875, 876, 877, 878, 879, 880, 881, 882, 884, 886, 888, 901, 902, 903, 904, 905, 906, 907, 908, 909, 910, 911, 912, 913, 914, 915, 916, 917, 918, 919, 920, 922, 924, 931, 933, 937, 940, 941, 942, 945, 950, 951, 952, 959, 960, 961, 962, 963, 966, 969, 971, 972, 973, 974, 976, 977, 978, 979, 980, 981, 982, 983, 986, 987, 988, 989, 990, 991, 992, 993, 994, 995, 997, 998, 999, 1000, 1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009, 1010, 1011, 1015, 1016, 1017, 1028, 1029, 1030, 1031, 1032, 1033, 1034, 1044, 1045, 1050, 1051, 1056, 1057, 1060, 1061, 1062, 1063, 1064, 1067, 1068, 1069, 1070, 1072, 1073, 1079, 1080, 1081, 1082, 1083, 1084, 1085, 1086, 1087, 1088, 1089, 1090, 1091, 1092, 1098, 1099, 1100, 1127, 1138, 1139, 1140, 1141, 1142, 1143, 1144, 1170, 1171, 1176, 1177, 1178, 1190, 1191, 1192, 1193, 1194, 1195, 1198, 1208, 1209, 1213, 1214, 1217, 1220, 1221, 1222, 1228, 1232, 1233, 1235, 1241, 1243, 1247, 1251, 1254, 1266, 1267, 1268, 1269, 1270, 1271, 1272, 1273, 1276, 1277, 1279, 1281, 1282, 1283, 1284, 1286, 1287, 1288, 1320, 1321, 1322, 1324, 1326, 1329, 1366, 1380, 1396, 1399, 1421, 1455, 1456, 1459, 1460, 1461, 1462, 1463, 1464, 1466, 1473, 1474, 1476, 1477, 1478, 1479, 1483, 1487, 1488, 1496, 1498, 1500, 1501, 1503, 1507, 1508, 1511, 1513, 1515, 1522, 1529, 1530, 1531, 1532, 1535, 1536, 1539, 1541, 1542, 1543, 1544, 1545, 1547, 1550, 1565, 1570, 1571, 1572, 1573, 1574, 1577, 1578, 1580, 1582, 1583, 1584, 1586, 1587, 1588, 1590, 1591, 1595, 1597, 1600, 1601, 1603, 1606, 1608, 1609, 1611, 1612, 1613, 1617, 1622, 1623, 1624, 1625, 1626, 1627, 1629, 1630, 1631, 1635, 1636, 1637, 1638, 1639, 1640, 1642, 1643, 1645, 1646, 1647, 1649, 1650, 1652, 1656, 1691, 1692, 1693, 1694, 1695, 1696, 1697, 1698, 1699, 1701, 1702, 1703, 1704, 1705, 1706, 1707, 1708, 1709, 1710, 1711, 1712, 1713, 1714, 1715, 1716, 1717, 1718, 1719, 1720, 1721, 1722, 1728, 1729, 1730, 1732, 1734, 1735, 1736, 1737, 1738, 1739, 1740, 1741, 1742, 1743, 1744, 1745, 1757, 1760, 1761, 1762, 1764, 1780, 1781, 1782, 1790, 1791, 1796, 1797, 1798, 1799, 1801, 1810, 1815, 1816, 1817, 1818, 1819, 1820, 1821, 1822, 1823, 1824, 1825, 1826, 1827, 1828, 1829, 1830, 1831, 1832, 1833, 1834, 1835, 1836, 1837, 1838, 1839, 1840, 1841, 1842, 1843, 1844, 1845, 1846, 1847, 1848, 1849, 1850, 1851, 1852, 1853, 1854, 1855, 1856, 1857, 1858, 1859, 1860, 1861, 1862, 1863, 1864, 1865, 1866, 1867, 1868, 1869, 1870, 1871, 1872, 1873, 1874, 1875, 1876, 1877, 1878, 1879, 1880, 1882, 1884]
-AllQuestDefaultEnemyIDs = [303, 304, 305, 307, 308, 309, 310, 318, 319, 320, 323, 324, 325, 326, 329, 332, 341, 342, 345, 346, 347, 348, 349, 350, 351, 352, 356, 359, 365, 367, 369, 372, 373, 374, 375, 376, 383, 384, 385, 386, 389, 390, 391, 392, 393, 394, 395, 396, 399, 401, 403, 404, 405, 406, 407, 409, 411, 414, 415, 418, 436, 437, 445, 446, 447, 448, 450, 451, 454, 455, 456, 457, 458, 459, 461, 462, 463, 464, 466, 468, 470, 475, 477, 479, 481, 483, 485, 487, 488, 489, 490, 491, 492, 493, 495, 496, 497, 498, 500, 501, 503, 504, 506, 508, 510, 512, 513, 515, 517, 519, 525, 532, 533, 534, 535, 536, 538, 540, 542, 544, 546, 547, 548, 549, 550, 551, 552, 553, 557, 558, 559, 560, 561, 562, 563, 564, 565, 566, 567, 569, 570, 571, 572, 573, 576, 577, 578, 579, 581, 583, 588, 591, 593, 598, 600, 601, 602, 603, 604, 607, 608, 609, 610, 613, 635, 636, 639, 640, 641, 642, 644, 649, 650, 661, 663, 667, 669, 671, 673, 677, 690, 697, 739, 740, 741, 742, 743, 744, 746, 747, 748, 750, 751, 752, 753, 755, 759, 760, 761, 765, 767, 768, 775, 778, 779, 780, 781, 782, 783, 784, 785, 786, 787, 788, 789, 790, 791, 792, 797, 821, 822, 823, 824, 826, 827, 828, 829, 830, 831, 832, 833, 834, 837, 838, 839, 840, 841, 842, 848, 930, 932, 934, 935, 936, 938, 939, 943, 944, 946, 947, 948, 949, 964, 965, 967, 968, 970, 975, 984, 985, 996, 1035, 1036, 1037, 1038, 1039, 1040, 1041, 1042, 1043, 1046, 1047, 1048, 1049, 1052, 1053, 1054, 1055, 1058, 1059, 1065, 1066, 1071, 1074, 1075, 1076, 1077, 1078, 1093, 1094, 1095, 1096, 1097, 1116, 1117, 1118, 1119, 1120, 1121, 1122, 1123, 1124, 1125, 1126, 1128, 1145, 1146, 1147, 1148, 1149, 1150, 1151, 1152, 1153, 1154, 1158, 1159, 1160, 1161, 1162, 1163, 1164, 1165, 1166, 1167, 1168, 1169, 1172, 1173, 1174, 1175, 1196, 1197, 1199, 1200, 1201, 1202, 1203, 1204, 1205, 1206, 1207, 1210, 1211, 1212, 1215, 1216, 1218, 1219, 1223, 1224, 1225, 1226, 1227, 1229, 1230, 1231, 1234, 1236, 1237, 1238, 1239, 1240, 1242, 1244, 1245, 1246, 1248, 1249, 1250, 1343, 1344, 1345, 1348, 1386, 1387, 1388, 1389, 1391, 1393, 1395, 1397, 1398, 1400, 1402, 1404, 1405, 1406, 1407, 1408, 1410, 1412, 1413, 1414, 1415, 1416, 1417, 1418, 1419, 1422, 1423, 1424, 1425, 1457, 1458, 1465, 1467, 1468, 1469, 1470, 1471, 1472, 1482, 1484, 1485, 1486, 1489, 1490, 1491, 1497, 1499, 1502, 1512, 1516, 1518, 1519, 1526, 1527, 1528, 1534, 1537, 1540, 1546, 1548, 1549, 1551, 1575, 1576, 1579, 1581, 1585, 1589, 1592, 1594, 1596, 1598, 1602, 1604, 1605, 1607, 1610, 1614, 1616, 1618, 1619, 1621, 1628, 1634, 1644, 1648, 1651, 1653, 1655, 1674, 1675, 1676, 1677, 1678, 1679, 1680, 1681, 1682, 1683, 1684, 1686, 1687, 1688, 1689, 1690, 1888]
+AllNormalEnemyDefaultIDs = [313, 315, 339, 413, 476, 521, 523, 555, 568, 630, 631, 632, 633, 634, 638, 645, 646, 647, 648, 651, 652, 653, 655, 656, 659, 660, 662, 664, 665, 666, 668, 675, 676, 678, 679, 680, 681, 682, 683, 684, 685, 686, 687, 688, 689, 691, 692, 694, 695, 699, 701, 703, 716, 717, 718, 719, 720, 721, 722, 723, 729, 730, 731, 732, 734, 749, 756, 757, 758, 762, 763, 764, 766, 771, 772, 773, 774, 794, 795, 796, 798, 800, 802, 804, 806, 825, 835, 843, 844, 847, 849, 850, 851, 852, 853, 854, 855, 856, 857, 858, 859, 860, 861, 862, 865, 867, 868, 869, 870, 872, 873, 874, 875, 876, 877, 879, 880, 881, 882, 884, 886, 888, 901, 902, 903, 904, 905, 906, 907, 908, 909, 911, 912, 913, 914, 915, 916, 917, 918, 919, 922, 924, 931, 933, 937, 940, 941, 942, 945, 950, 951, 952, 959, 960, 961, 962, 963, 974, 977, 978, 979, 980, 981, 983, 989, 990, 991, 992, 994, 997, 998, 999, 1000, 1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009, 1010, 1011, 1015, 1016, 1017, 1028, 1029, 1030, 1031, 1032, 1033, 1034, 1050, 1051, 1060, 1061, 1063, 1064, 1069, 1070, 1072, 1073, 1080, 1081, 1082, 1083, 1084, 1085, 1086, 1087, 1088, 1089, 1090, 1091, 1092, 1098, 1100, 1127, 1138, 1139, 1140, 1141, 1142, 1143, 1144, 1171, 1176, 1177, 1178, 1190, 1191, 1192, 1193, 1194, 1195, 1198, 1208, 1209, 1213, 1214, 1217, 1221, 1222, 1228, 1232, 1233, 1235, 1241, 1251, 1254, 1266, 1267, 1268, 1269, 1270, 1271, 1272, 1273, 1276, 1277, 1279, 1281, 1282, 1283, 1284, 1286, 1287, 1288, 1320, 1321, 1322, 1324, 1326, 1329, 1366, 1380, 1396, 1399, 1421, 1455, 1456, 1459, 1460, 1461, 1462, 1463, 1464, 1466, 1473, 1474, 1476, 1477, 1478, 1479, 1483, 1487, 1488, 1496, 1498, 1500, 1501, 1503, 1507, 1508, 1511, 1513, 1515, 1522, 1529, 1530, 1531, 1532, 1535, 1536, 1539, 1541, 1542, 1543, 1544, 1545, 1547, 1550, 1565, 1570, 1571, 1572, 1573, 1574, 1577, 1578, 1580, 1582, 1583, 1584, 1586, 1587, 1588, 1590, 1591, 1595, 1597, 1600, 1601, 1603, 1606, 1608, 1609, 1611, 1612, 1613, 1617, 1622, 1623, 1624, 1625, 1626, 1627, 1629, 1630, 1631, 1635, 1636, 1637, 1638, 1639, 1640, 1642, 1643, 1645, 1646, 1647, 1649, 1650, 1652, 1656, 1691, 1692, 1693, 1694, 1695, 1696, 1697, 1698, 1699, 1701, 1702, 1703, 1704, 1705, 1706, 1707, 1708, 1709, 1710, 1711, 1712, 1713, 1714, 1715, 1716, 1717, 1718, 1719, 1720, 1721, 1722, 1728, 1729, 1730, 1732, 1734, 1735, 1736, 1737, 1738, 1739, 1740, 1741, 1742, 1743, 1744, 1745, 1757, 1760, 1761, 1762, 1764, 1780, 1781, 1782, 1790, 1791, 1796, 1797, 1798, 1799, 1801, 1810, 1815, 1816, 1817, 1818, 1819, 1820, 1821, 1822, 1823, 1824, 1825, 1826, 1827, 1828, 1829, 1830, 1831, 1832, 1833, 1834, 1835, 1836, 1837, 1838, 1839, 1840, 1841, 1842, 1843, 1844, 1845, 1846, 1847, 1848, 1849, 1850, 1851, 1852, 1853, 1854, 1855, 1856, 1857, 1858, 1859, 1860, 1861, 1862, 1863, 1864, 1865, 1866, 1867, 1868, 1869, 1870, 1871, 1872, 1873, 1874, 1875, 1876, 1877, 1878, 1879, 1880, 1882, 1884]
+AllQuestDefaultEnemyIDs = [303, 304, 305, 307, 308, 309, 310, 318, 319, 320, 323, 324, 325, 326, 329, 332, 341, 342, 345, 346, 347, 348, 349, 350, 351, 352, 356, 359, 365, 367, 369, 372, 373, 374, 375, 376, 383, 384, 385, 386, 389, 390, 391, 392, 393, 394, 395, 396, 399, 401, 403, 404, 405, 406, 407, 409, 411, 414, 415, 418, 436, 437, 445, 446, 447, 448, 450, 451, 454, 455, 456, 457, 458, 459, 461, 462, 463, 464, 466, 468, 470, 475, 477, 479, 481, 483, 485, 487, 488, 489, 490, 491, 492, 493, 495, 496, 497, 498, 500, 501, 503, 504, 506, 508, 510, 512, 513, 515, 517, 519, 525, 532, 533, 534, 535, 536, 538, 540, 542, 544, 546, 547, 548, 549, 550, 551, 552, 553, 557, 558, 559, 560, 561, 562, 563, 565, 566, 569, 570, 571, 572, 573, 576, 577, 578, 579, 581, 583, 588, 591, 593, 598, 600, 601, 602, 603, 604, 607, 608, 609, 610, 613, 640, 641, 642, 644, 649, 663, 667, 673, 740, 742, 744, 746, 750, 751, 752, 759, 760, 761, 778, 780, 782, 784, 785, 786, 787, 788, 789, 790, 791, 824, 827, 828, 829, 832, 833, 834, 837, 838, 839, 840, 848, 930, 934, 935, 939, 946, 947, 948, 949, 964, 965, 967, 970, 975, 984, 985, 996, 1035, 1036, 1041, 1053, 1054, 1058, 1059, 1066, 1074, 1075, 1076, 1077, 1078, 1093, 1094, 1095, 1096, 1097, 1116, 1117, 1118, 1119, 1120, 1121, 1122, 1123, 1124, 1125, 1126, 1128, 1145, 1147, 1148, 1151, 1152, 1153, 1154, 1158, 1159, 1160, 1162, 1164, 1167, 1168, 1169, 1172, 1173, 1174, 1196, 1197, 1199, 1200, 1201, 1202, 1203, 1204, 1205, 1206, 1207, 1212, 1215, 1223, 1226, 1229, 1230, 1231, 1236, 1237, 1238, 1239, 1240, 1242, 1245, 1246, 1248, 1249, 1250, 1343, 1344, 1345, 1348, 1386, 1387, 1388, 1389, 1391, 1393, 1395, 1397, 1398, 1400, 1402, 1404, 1405, 1406, 1407, 1408, 1410, 1412, 1413, 1414, 1415, 1416, 1417, 1418, 1419, 1422, 1423, 1424, 1425, 1457, 1458, 1465, 1467, 1468, 1469, 1470, 1471, 1472, 1482, 1484, 1485, 1486, 1489, 1490, 1491, 1497, 1499, 1502, 1512, 1516, 1518, 1519, 1526, 1527, 1528, 1534, 1537, 1540, 1546, 1548, 1549, 1551, 1575, 1576, 1579, 1581, 1585, 1589, 1592, 1594, 1596, 1598, 1602, 1604, 1605, 1607, 1610, 1614, 1616, 1618, 1619, 1621, 1628, 1634, 1644, 1648, 1651, 1653, 1655, 1674, 1675, 1676, 1677, 1678, 1679, 1680, 1681, 1682, 1683, 1684, 1686, 1687, 1688, 1689, 1690, 1888]
 AllBossDefaultIDs = [179, 180, 181, 182, 184, 185, 186, 187, 189, 190, 191, 193, 195, 196, 197, 198, 199, 201, 202, 203, 204, 206, 208, 210, 212, 214, 216, 217, 219, 220, 221, 222, 223, 225, 227, 229, 231, 232, 234, 235, 236, 237, 238, 239, 240, 241, 242, 243, 244, 245, 248, 249, 250, 251, 252, 253, 254, 266, 267, 268, 269, 270, 271, 274, 1342, 1429, 1430, 1431, 1432, 1433, 1434, 1435, 1436, 1437, 1438, 1439, 1440, 1441, 1442, 1443, 1444, 1445, 1448, 1454, 1632, 1733, 1746, 1747, 1748, 1749, 1754, 1755]
 
 # "Location": [Warp Cutscene, "chgEdID", Map Name, Map ID]
@@ -19,6 +20,8 @@ PartyMembersAddScripts = {"Tora": ["chapt02", 7], "Nia": ["chapt02", 9], "Morag"
 ProofofPurchaseIDs = Helper.InclRange(25306, 25321)
 
 ValidPouchItems = [x for x in IDs.PouchItems if x not in [40314, 40428]]
+
+InvalidMapNPCs = [8284, 5487]
 
 #25333->25348 for Casino Vouchers
 #25479->25488 for Bounty Tokens
@@ -35,38 +38,70 @@ ValidPouchItems = [x for x in IDs.PouchItems if x not in [40314, 40428]]
 # Known Issues: 
 # Poppiswap is going to be fucked up with custom enhancements
 
-def UMHunt(OptionDictionary):
+def UMHunt():
     if IDs.CurrentSliderOdds != 0:
         SetCount = IDs.CurrentSliderOdds
         ChosenAreaOrder = []
         if IDs.CurrentSliderOdds > 10: #really need to limit the spinbox instead
             SetCount = 10
-        CheckForSuperbosses(SetCount, OptionDictionary)
+        CheckForSuperbosses(SetCount)
         ChosenAreaOrder.extend(random.sample(TotalAreaPool, SetCount))
-        PartyMemberstoAdd = PartyMemberAddition(SetCount, ChosenAreaOrder)
-        AreaUMs, AllAreaMonsters = CustomEnemyRando(ChosenAreaOrder, OptionDictionary)
+        #FindMonsters(ChosenAreaOrder)
+        PartyMemberstoAdd = PartyMemberAddition(SetCount)
+        AreaUMs, AllAreaMonsters = CustomEnemyRando(ChosenAreaOrder)
         EnemySets = ChosenEnemySets(SetCount, AreaUMs)
-        WarpManagement(SetCount, ChosenAreaOrder, PartyMemberstoAdd, EnemySets, OptionDictionary)
+        WarpManagement(SetCount, ChosenAreaOrder, PartyMemberstoAdd, EnemySets)
         CHR_EnArrangeAdjustments(AllAreaMonsters, EnemySets, ChosenAreaOrder)
         LandmarkAdjustments(ChosenAreaOrder)
         NoUnintendedRewards(ChosenAreaOrder)
         SpiritCrucibleEntranceRemoval()
-        ShopChanges(ChosenAreaOrder, OptionDictionary)
+        ShopChanges(ChosenAreaOrder)
         BalanceChanges(ChosenAreaOrder)
         if ExtraSuperbosses:
             OhBoyHereWeGoAgain()
         Cleanup()
         UMHuntMenuTextChanges()
         #DebugItemsPlace() # currently doesnt matter since I hide all the argentum chests anyways
-        DebugEasyMode()
+        #DebugEasyMode()
         #DebugSpawnCountPrint(EnemySets, ChosenAreaOrder)
 
-def CheckForSuperbosses(SetCount, OptionDictionary):
+def FindMonsters(ChosenAreaOrder): # was used to debug and find enemies that spawned in too often. If the objective pointer points towards defeating an enemy of which there are 16 or more on the map you're on, the game will freeze upon loading.
+    enemycountholder = Helper.ExtendListtoLength([0], len(AllQuestDefaultEnemyIDs),"0")
+    for i in range(0, len(ChosenAreaOrder)):
+        enemypopfile = "./_internal/JsonOutputs/common_gmk/" + ContinentInfo[ChosenAreaOrder[i]][2] + "_FLD_EnemyPop.json"
+        with open(enemypopfile, 'r+', encoding='utf-8') as file:
+            data = json.load(file)
+            for row in data["rows"]:
+                for k in range(1, 5):
+                    if row[f"ene{k}ID"] == 0:
+                            break
+                    else:
+                        for j in range(0, len(AllQuestDefaultEnemyIDs)):
+                            if row[f"ene{k}ID"] == AllQuestDefaultEnemyIDs[j]:
+                                enemycountholder[j] += row[f"ene{k}num"]
+                                break
+            file.seek(0)
+            file.truncate()
+            json.dump(data, file, indent=2, ensure_ascii=False)
+    toolargepool = {
+        "IDs": [],
+        "Counts": []
+    }
+    for i in range(0, len(enemycountholder)):
+        if enemycountholder[i] >= 10: # I chose 10 as an arbitrary number under 16. 
+            toolargepool["IDs"].append(AllQuestDefaultEnemyIDs[i])
+            toolargepool["Counts"].append(enemycountholder[i])
+    print(toolargepool)
+
+def CheckForSuperbosses(SetCount):
     global ExtraSuperbosses
-    if (OptionDictionary["Unique Monster Hunt"]["subOptionObjects"]["Extra Superbosses"]["subOptionTypeVal"].get()) & (SetCount == 10):
+    global SuperbossCount
+    if (Options.UMHuntOption_SuperbossWave.GetState()) & (SetCount == 10):
         ExtraSuperbosses = True
+        SuperbossCount = 5
     else:
         ExtraSuperbosses = False
+        SuperbossCount = 0
 
 def Cleanup():
     with open("./_internal/JsonOutputs/common/FLD_QuestList.json", 'r+', encoding='utf-8') as file:
@@ -96,13 +131,13 @@ def Cleanup():
     Helper.ColumnAdjust("./_internal/JsonOutputs/common/CHR_Dr.json", ["DefSPType"], 2)
     GimmickAdjustments()
 
-def ShopChanges(ChosenAreaOrder, OptionDictionary): # Moved these out since they were cluttering the main function up. Order probably matters
+def ShopChanges(ChosenAreaOrder): # Moved these out since they were cluttering the main function up. Order probably matters
     UMRewardDropChanges()
-    CoreCrystalIdentification(OptionDictionary)
+    CoreCrystalIdentification()
     WeaponPowerLevel()
     BladeTrustRequirementChanges()
     PoppiswapCostChanges()
-    AddDLCRewards()
+    AddDLCRewards(ChosenAreaOrder)
     CustomShopSetup()
     MoveSpeedDeedSetup()
     InnShopCosts()
@@ -205,9 +240,8 @@ def MoveSpeedDeedSetup():
         file.truncate()
         json.dump(data, file, indent=2, ensure_ascii=False)
 
-def OhBoyHereWeGoAgain(): # this is going to take so much effort to add extras, isn't it.
-    # Just going to do 1 final set of 4 UMs, which each scale up by 10 compared to the previous one in the list (so 5 + 12*9 + 10*list index)
-    with open("./_internal/JsonOutputs/common/CHR_EnArrange.json", 'r+', encoding='utf-8') as file: # Adjusted their levels
+def OhBoyHereWeGoAgain():
+    with open("./_internal/JsonOutputs/common/CHR_EnArrange.json", 'r+', encoding='utf-8') as file: # Adjusts the levels of the superbosses
         data = json.load(file)
         for i in range(0, len(ChosenSuperbosses)):
             for row in data["rows"]:
@@ -219,15 +253,15 @@ def OhBoyHereWeGoAgain(): # this is going to take so much effort to add extras, 
         file.truncate()
         json.dump(data, file, indent=2, ensure_ascii=False)
 
-def WarpManagement(SetCount, ChosenAreaOrder, PartyMemberstoAdd, EnemySets, OptionDictionary): # Main function was getting a bit too cluttered
+def WarpManagement(SetCount, ChosenAreaOrder, PartyMemberstoAdd, EnemySets): # Main function was getting a bit too cluttered
     if ExtraSuperbosses:
         EnemyGroupSetup()
     EventSetup(SetCount, ChosenAreaOrder, PartyMemberstoAdd)
     EventChangeSetup(SetCount, ChosenAreaOrder)
     QuestListSetup(SetCount, ChosenAreaOrder)
-    QuestTaskSetup(SetCount, ChosenAreaOrder, EnemySets)
-    FieldQuestBattleSetup(SetCount, ChosenAreaOrder, EnemySets)
-    FieldQuestTaskLogSetup(SetCount, ChosenAreaOrder, EnemySets)
+    QuestTaskSetup(SetCount,EnemySets)
+    FieldQuestBattleSetup(SetCount,EnemySets)
+    FieldQuestTaskLogSetup(EnemySets)
     AddQuestConditions(SetCount, ChosenAreaOrder)
 
 def EnemyGroupSetup(): # Makes extra group for superbosses:
@@ -242,44 +276,52 @@ def EnemyGroupSetup(): # Makes extra group for superbosses:
 def QuestListSetup(SetCount, ChosenAreaOrder): # Adjusting the quest list
     with open("./_internal/JsonOutputs/common/FLD_QuestList.json", 'r+', encoding='utf-8') as file:
         data = json.load(file)
-        for i in range(0, SetCount):
-            if i != SetCount - 1: # for every set except the last
-                for row in data["rows"]:
-                    if row["$id"] == 235 + i:
+        CurrArea = 0
+        for row in data["rows"]:
+            rowID = row["$id"]
+            match rowID:
+                case rowID if rowID in range(235, 235 + SetCount - 1): # For all except the last set, do this
+                    row["Talker"] = 1001
+                    row["FlagCLD"] = 832 + CurrArea
+                    row["PurposeID"] = 249 + CurrArea
+                    row["CountCancel"] = 1
+                    row["NextQuestA"] = row["$id"] + 1
+                    row["CallEventA"] = ContinentInfo[ChosenAreaOrder[CurrArea+1]][0]
+                    CurrArea += 1
+                case rowID if rowID == 235 + SetCount - 1: # for the last quest
+                    if not ExtraSuperbosses: # if we don't have extrasuperbosses, warp us to the credits
                         row["Talker"] = 1001
-                        row["FlagCLD"] = 832 + i
-                        row["PurposeID"] = 249 + i
-                        row["CountCancel"] = 1
-                        row["NextQuestA"] = row["$id"] + 1
-                        row["CallEventA"] = ContinentInfo[ChosenAreaOrder[i+1]][0]
+                        row["FlagCLD"] = 832 + CurrArea
+                        row["PurposeID"] = 249 + CurrArea
+                        row["CountCancel"] = 0
+                        row["NextQuestA"] = 236 + CurrArea
+                        row["NextQuestA"] = 30000
+                        row["CallEventA"] = 10494
                         break
-            else: # for the last set
-                if ExtraSuperbosses:
-                    for row in data["rows"]:
-                        if row["$id"] == 235 + i:
-                            row["Talker"] = 1001
-                            row["FlagCLD"] = 832 + i
-                            row["PurposeID"] = 249 + i
-                            row["CountCancel"] = 0
-                            row["NextQuestA"] = 236 + i # next quest afterwards
-                        if row["$id"] == 236 + i: # next quest after completion, should warp us to credits then
-                            row["Talker"] = 1001
-                            row["FlagCLD"] = 833 + i
-                            row["PurposeID"] = 250 + i
-                            row["CountCancel"] = 1
-                            row["NextQuestA"] = 30000
-                            row["CallEventA"] = 10494
-                            break
-                else: # we don't have extra superbosses on
-                    for row in data["rows"]:
-                        if row["$id"] == 235 + i:
-                            row["Talker"] = 1001
-                            row["FlagCLD"] = 832 + i
-                            row["PurposeID"] = 249 + i
-                            row["CountCancel"] = 0
-                            row["NextQuestA"] = 30000
-                            row["CallEventA"] = 10494
-                            break  
+                    else: # otherwise, the set doesn't warp you anywhere, and instead starts the next quest
+                        row["Talker"] = 1001
+                        row["FlagCLD"] = 832 + CurrArea
+                        row["PurposeID"] = 249 + CurrArea
+                        row["CountCancel"] = 0
+                        row["NextQuestA"] = 236 + CurrArea
+                        row["CallEventA"] = 0
+                        CurrArea += 1
+                case rowID if rowID in range(235 + SetCount, 235 + SetCount + SuperbossCount - 1): # for all except the last quest (superbosses on)
+                    row["Talker"] = 1001
+                    row["FlagCLD"] = 832 + CurrArea
+                    row["PurposeID"] = 249 + CurrArea
+                    row["CountCancel"] = 0
+                    row["NextQuestA"] = 236 + CurrArea
+                    row["CallEventA"] = 0
+                    CurrArea += 1
+                case rowID if rowID == 235 + SetCount + SuperbossCount - 1: # for the instance where we have superbosses on, the very last quest
+                    row["Talker"] = 1001
+                    row["FlagCLD"] = 832 + CurrArea
+                    row["PurposeID"] = 249 + CurrArea
+                    row["CountCancel"] = 1
+                    row["NextQuestA"] = 30000
+                    row["CallEventA"] = 10494
+                    break
         file.seek(0)
         file.truncate()
         json.dump(data, file, indent=2, ensure_ascii=False)
@@ -324,7 +366,7 @@ def EventChangeSetup(SetCount, ChosenAreaOrder): # Adjusting the warp event endi
         file.truncate()
         json.dump(data, file, indent=2, ensure_ascii=False)
 
-def PartyMemberAddition(SetCount, ChosenAreaOrder): # Adds new party members
+def PartyMemberAddition(SetCount): # Adds new party members
     ChosenPartyMemberOrder = []
     FirstPartyMember = []
     ChosenPartyMemberOrder.extend(random.sample(["Tora", "Zeke", "Nia", "Morag"], min(SetCount, 4)))
@@ -337,7 +379,7 @@ def PartyMemberAddition(SetCount, ChosenAreaOrder): # Adds new party members
     RNGAdjustedChosenPartyMemberOrder = FirstPartyMember
     return RNGAdjustedChosenPartyMemberOrder
 
-def QuestTaskSetup(SetCount, ChosenAreaOrder, EnemySets): # Adds the new quest tasks
+def QuestTaskSetup(SetCount, EnemySets): # Adds the new quest tasks
     StartingQuestTaskRow = Helper.GetMaxValue("./_internal/JsonOutputs/common/FLD_QuestBattle.json", "$id") + 1
     StartingQuestLogRow = Helper.GetMaxValue("./_internal/JsonOutputs/common_ms/fld_quest.json", "$id") + 1
     with open("./_internal/JsonOutputs/common/FLD_QuestTask.json", 'r+', encoding='utf-8') as file:
@@ -352,12 +394,15 @@ def QuestTaskSetup(SetCount, ChosenAreaOrder, EnemySets): # Adds the new quest t
                 StartingQuestTaskRow += 3
                 StartingQuestLogRow += 3
         if ExtraSuperbosses:
-            data["rows"].append({"$id": 259, "PreCondition": 0, "TaskType1": 1, "TaskID1": StartingQuestTaskRow, "Branch1": 0, "TaskLog1": StartingQuestLogRow, "TaskUI1": 0, "TaskCondition1": 0, "TaskType2": 0, "TaskID2": 0, "Branch2": 0, "TaskLog2": 0, "TaskUI2": 0, "TaskCondition2": 0, "TaskType3": 1, "TaskID3": 0, "Branch3": 0, "TaskLog3": 0, "TaskUI3": 0, "TaskCondition3": 0, "TaskType4": 0, "TaskID4": 0, "Branch4": 0, "TaskLog4": StartingQuestLogRow + 3, "TaskUI4": 0, "TaskCondition4": 0})
+            for i in range(0, SuperbossCount):
+                data["rows"].append({"$id": 259 + i, "PreCondition": 0, "TaskType1": 1, "TaskID1": StartingQuestTaskRow, "Branch1": 0, "TaskLog1": StartingQuestLogRow, "TaskUI1": 0, "TaskCondition1": 0, "TaskType2": 0, "TaskID2": 0, "Branch2": 0, "TaskLog2": 0, "TaskUI2": 0, "TaskCondition2": 0, "TaskType3": 1, "TaskID3": 0, "Branch3": 0, "TaskLog3": 0, "TaskUI3": 0, "TaskCondition3": 0, "TaskType4": 0, "TaskID4": 0, "Branch4": 0, "TaskLog4": 0, "TaskUI4": 0, "TaskCondition4": 0})
+                StartingQuestTaskRow += 1
+                StartingQuestLogRow += 1        
         file.seek(0)
         file.truncate()
         json.dump(data, file, indent=2, ensure_ascii=False)
 
-def FieldQuestBattleSetup(SetCount, ChosenAreaOrder, EnemySets): # Adds new rows in FLD_QuestBattle accordingly
+def FieldQuestBattleSetup(SetCount, EnemySets): # Adds new rows in FLD_QuestBattle accordingly
     StartingQuestBattleFlag = Helper.GetMaxValue("./_internal/JsonOutputs/common/FLD_QuestBattle.json", "CountFlag") + 1
     with open("./_internal/JsonOutputs/common/FLD_QuestBattle.json", 'r+', encoding='utf-8') as file:
         LastRow = 777
@@ -366,17 +411,22 @@ def FieldQuestBattleSetup(SetCount, ChosenAreaOrder, EnemySets): # Adds new rows
         for i in range(0, SetCount):
             for j in range(0, len(EnemySets[i])):
                 data["rows"].append({"$id": LastRow, "Refer": 1, "EnemyID": EnemySets[i][j], "EnemyGroupID": 0, "EnemySpeciesID": 0, "EnemyRaceID": 0, "Count": 1, "CountFlag": LastFlag, "DeadAll": 0, "TimeCount": 0, "TimeCountFlag": 0, "ReduceEnemyHP": 0, "ReducePCHP": 0, "TargetOff": 0}) 
-                LastRow = LastRow + 1
-                LastFlag = LastFlag + 1
+                LastRow += 1
+                LastFlag += 1
         if ExtraSuperbosses:
-            data["rows"].append({"$id": LastRow, "Refer": 2, "EnemyID": 0, "EnemyGroupID": Helper.GetMaxValue("./_internal/JsonOutputs/common/FLD_EnemyGroup.json", "$id") + 1, "EnemySpeciesID": 0, "EnemyRaceID": 0, "Count": 4, "CountFlag": StartingQuestBattleFlag, "DeadAll": 0, "TimeCount": 0, "TimeCountFlag": 0, "ReduceEnemyHP": 0, "ReducePCHP": 0, "TargetOff": 0}) 
+            for i in range(0, SuperbossCount):
+                data["rows"].append({"$id": LastRow, "Refer": 1, "EnemyID": ChosenSuperbosses[i], "EnemyGroupID": 0, "EnemySpeciesID": 0, "EnemyRaceID": 0, "Count": 1, "CountFlag": LastFlag, "DeadAll": 0, "TimeCount": 0, "TimeCountFlag": 0, "ReduceEnemyHP": 0, "ReducePCHP": 0, "TargetOff": 0}) 
+                LastRow += 1
+                LastFlag += 1
         file.seek(0)
         file.truncate()
         json.dump(data, file, indent=2, ensure_ascii=False)
 
-def FieldQuestTaskLogSetup(SetCount, ChosenAreaOrder, EnemySets): # Adds the task logs for the field quests
+def FieldQuestTaskLogSetup(EnemySets): # Adds the task logs for the field quests
     AllEnemySetNames = []
     AllEnemySetNameIDs = []
+    SuperbossNameIDs = []
+    SuperbossNames = []
     with open("./_internal/JsonOutputs/common/CHR_EnArrange.json", 'r+', encoding='utf-8') as file: # add level scaling here
         data = json.load(file)
         for i in range(0, len(EnemySets)):
@@ -404,7 +454,14 @@ def FieldQuestTaskLogSetup(SetCount, ChosenAreaOrder, EnemySets): # Adds the tas
                         elif LuckyDrop >= 75: # 10% chance for a doubloon
                             row["PreciousID"] = 25489
                         break
-            AllEnemySetNameIDs.append(CurrEnemySetNameIDs)
+            AllEnemySetNameIDs.append(CurrEnemySetNameIDs)        
+        if ExtraSuperbosses:
+            for i in range(0, len(ChosenSuperbosses)):
+                for row in data["rows"]:
+                    if row["$id"] == ChosenSuperbosses[i]:
+                        row["PreciousID"] = 25488 # You get another level 10 bounty token per um defeated
+                        SuperbossNameIDs.append(row["Name"])
+                        break
         file.seek(0)
         file.truncate()
         json.dump(data, file, indent=2, ensure_ascii=False)
@@ -418,6 +475,11 @@ def FieldQuestTaskLogSetup(SetCount, ChosenAreaOrder, EnemySets): # Adds the tas
                         CurrEnemySetNames.append(row["name"])
                         break
             AllEnemySetNames.append(CurrEnemySetNames)
+        for i in range(0, len(SuperbossNameIDs)):
+            for row in data["rows"]:
+                if row["$id"] == SuperbossNameIDs[i]:
+                    SuperbossNames.append(row["name"])
+                    break
         file.seek(0)
         file.truncate()
         json.dump(data, file, indent=2, ensure_ascii=False)
@@ -429,7 +491,9 @@ def FieldQuestTaskLogSetup(SetCount, ChosenAreaOrder, EnemySets): # Adds the tas
                 data["rows"].append({"$id": StartRow, "style": 62, "name": f"Defeat [System:Color name=tutorial]{AllEnemySetNames[i][j]}[/System:Color]"})
                 StartRow += 1
         if ExtraSuperbosses:
-            data["rows"].append({"$id": StartRow, "style": 62, "name": f"Defeat [System:Color name=tutorial]{ChosenSuperbosses[0]}[/System:Color] in {SuperbossMaps[0].strip()},\n[System:Color name=tutorial]{ChosenSuperbosses[1]}[/System:Color] in {SuperbossMaps[1].strip()},\n[System:Color name=tutorial]{ChosenSuperbosses[2]}[/System:Color] in {SuperbossMaps[2].strip()},\nand[System:Color name=tutorial]{ChosenSuperbosses[3]}[/System:Color] in {SuperbossMaps[3].strip()}."})
+            for i in range(0, SuperbossCount):
+                data["rows"].append({"$id": StartRow, "style": 62, "name": f"Defeat [System:Color name=tutorial]{SuperbossNames[0]}[/System:Color] in\n{SuperbossMaps[0].strip()}."})
+                StartRow += 1
         file.seek(0)
         file.truncate()
         json.dump(data, file, indent=2, ensure_ascii=False)
@@ -443,10 +507,11 @@ def ChosenEnemySets(SetCount, AreaUMs): # Figuring out what enemies to turn into
             EnemySets.append(random.sample(AreaUMs[i], len(AreaUMs[i])))
     return EnemySets
 
-def CustomEnemyRando(ChosenAreaOrder, OptionDictionary): # Custom shuffling of enemies
+def CustomEnemyRando(ChosenAreaOrder): # Custom shuffling of enemies
     AllAreaUMs = []
     AllAreaMonsters = []
     AllAreaSuperbosses = []
+    SuperbossMapsFull = []
     ShuffledUniqueEnemyIDs = AllUniqueMonsterDefaultIDs.copy()
     ShuffledSuperBossIDs = AllSuperBossDefaultIDs.copy()
     random.shuffle(ShuffledSuperBossIDs)
@@ -455,6 +520,7 @@ def CustomEnemyRando(ChosenAreaOrder, OptionDictionary): # Custom shuffling of e
         Chosen4UMs = ShuffledUniqueEnemyIDs[(4*k):(4+4*k)]
         ChosenSuperBoss = ShuffledSuperBossIDs[k]
         for i in range(0, len(IDs.ValidEnemyPopFileNames)):
+            UniqueAreaEnemies = []
             if ContinentInfo[ChosenAreaOrder[k]][2] in IDs.ValidEnemyPopFileNames[i]:
                 OriginalAreaEnemies = []
                 CurrentAreaUMs = []
@@ -467,7 +533,8 @@ def CustomEnemyRando(ChosenAreaOrder, OptionDictionary): # Custom shuffling of e
                         for j in range(1, 5):
                             if row[f"ene{j}ID"] in IDs.ValidEnemies: # if it's not a boss row and has a valid enemy id
                                 OriginalAreaEnemies.append(row[f"ene{j}ID"]) # add to list of enemies to choose from
-                    OriginalAreaEnemies = list(set(OriginalAreaEnemies)) # then we remove dupes, and sort it
+                    UniqueAreaEnemies = list(OrderedDict.fromkeys(OriginalAreaEnemies)) # then we remove dupes, and sort it
+                    OriginalAreaEnemies = UniqueAreaEnemies
                     #print(OriginalAreaEnemies)
                     NewAreaEnemies = OriginalAreaEnemies.copy() # make a copy of the list
                     NewAreaEnemies = [x for x in NewAreaEnemies if x not in AllUniqueMonsterDefaultIDs + AllSuperBossDefaultIDs] # now remove all ums and superbosses
@@ -508,6 +575,7 @@ def CustomEnemyRando(ChosenAreaOrder, OptionDictionary): # Custom shuffling of e
                                     row["POP_TIME"] = 256
                                     row["popWeather"] = 255
                                     AllAreaSuperbosses.append(row[f"ene{j}ID"])
+                                    SuperbossMapsFull.append(ChosenAreaOrder[k])
                     file.seek(0)
                     file.truncate()
                     json.dump(data, file, indent=2, ensure_ascii=False)
@@ -519,21 +587,24 @@ def CustomEnemyRando(ChosenAreaOrder, OptionDictionary): # Custom shuffling of e
     EnemyRandoLogic.FishFix()
     EnemyRandoLogic.BigEnemyCollisionFix()
     if ExtraSuperbosses:
-        AllAreaSuperbosses = list(set(AllAreaSuperbosses))
-        ChosenSuperbossNumbers = random.choices(Helper.InclRange(0, 9), k = 4)
+        UniqueSuperbosses = list(OrderedDict.fromkeys(AllAreaSuperbosses))
+        ChosenSuperbossNumbers = random.choices(Helper.InclRange(0, 9), k = SuperbossCount)
         global ChosenSuperbosses
         ChosenSuperbosses = []
-        for i in range(0, 4):
-            ChosenSuperbosses.append(AllAreaSuperbosses[ChosenSuperbossNumbers[i]])
+        for i in range(0, SuperbossCount):
+            ChosenSuperbosses.append(UniqueSuperbosses[ChosenSuperbossNumbers[i]])
         global SuperbossMaps
         SuperbossMaps = []
-        for i in range(0, 4):
-            SuperbossMaps.append(ChosenAreaOrder[ChosenSuperbossNumbers[i]])
-    UMEnemyAggro(OptionDictionary)
+        for i in range(0, SuperbossCount):
+            for j in range(0, len(AllAreaSuperbosses)):
+                if AllAreaSuperbosses[j] == ChosenSuperbosses[i]: # if we have a chosen superboss that matches the entire list of superbosses and their maps (both of equal length!)
+                    SuperbossMaps.append(SuperbossMapsFull[j]) # add the superboss's map to the list of maps we care about
+                    break
+    UMEnemyAggro()
     return AllAreaUMs, AllAreaMonsters
     
-def UMEnemyAggro(OptionDictionary): # custom enemy aggro
-    EnemyAggroSliderOdds = OptionDictionary["Enemy Aggro"]["spinBoxVal"].get()
+def UMEnemyAggro(): # custom enemy aggro
+    EnemyAggroSliderOdds = Options.EnemyAggroOption.GetOdds()
     if EnemyAggroSliderOdds == 0: #if the slider is 0, turn every enemy passive, except the unique monsters
         with open("./_internal/JsonOutputs/common/CHR_EnArrange.json", 'r+', encoding='utf-8') as file: 
             data = json.load(file)
@@ -585,7 +656,7 @@ def UMEnemyAggro(OptionDictionary): # custom enemy aggro
 
 def CHR_EnArrangeAdjustments(AllAreaMonsters, EnemySets, ChosenAreaOrder): # adjusts aggro + drops of all enemies + levels + stats
     EnemyParamstoNerf = Helper.ExtendListtoLength([], len(EnemySets), "[]") # we want to nerf the early enemies in all their stats, you just don't have much damage or tankiness
-    Helper.ColumnAdjust("./_internal/JsonOutputs/common/CHR_EnArrange.json", ["ExpRev", "GoldRev", "WPRev", "SPRev", "DropTableID", "DropTableID2", "DropTableID3", "PreciousID"], 0)         
+    Helper.ColumnAdjust("./_internal/JsonOutputs/common/CHR_EnArrange.json", ["ExpRev", "GoldRev", "WPRev", "SPRev", "DropTableID", "DropTableID2", "DropTableID3"], 0)         
     with open("./_internal/JsonOutputs/common/CHR_EnArrange.json", 'r+', encoding='utf-8') as file:
         data = json.load(file)
         for i in range(0, len(AllAreaMonsters)):
@@ -985,10 +1056,10 @@ def IdentifyClassBladeCrystals(CrystalList): # go from ITM_CrystalList $id->blad
             HealerList.append(CrystalList[i])
     return TankList, AttackerList, HealerList
 
-def CoreCrystalIdentification(OptionsRunDict): # Figuring out the groups that each Core Crystal Belongs to, then picking items from each group for the shop
+def CoreCrystalIdentification(): # Figuring out the groups that each Core Crystal Belongs to, then picking items from each group for the shop
     ShuffleCoreCrystals()
     AllBladeCrystalIDs = Helper.InclRange(45002,45004) + Helper.InclRange(45006, 45009) + [45016] + Helper.InclRange(45017,45049) + [45056, 45057]
-    NGPlusBladeCrystalIDs = RaceMode.DetermineNGPlusBladeCrystalIDs(OptionsRunDict)
+    NGPlusBladeCrystalIDs = RaceMode.DetermineNGPlusBladeCrystalIDs()
     RemainingBladeCrystalIDs = [x for x in AllBladeCrystalIDs if x not in NGPlusBladeCrystalIDs]
     DLCBladeCrystalIDs = IdentifyDLCBladeCrystals(RemainingBladeCrystalIDs)
     RemainingBladeCrystalIDs = [x for x in RemainingBladeCrystalIDs if x not in DLCBladeCrystalIDs]
@@ -1541,7 +1612,7 @@ def GambaShopRewards(): # Makes the rewards for the gamba shop
     GambaShopRewardList = Helper.ExtendListtoLength([25333], 16, "inputlist[i-1] + 1")
     random.shuffle(GambaShopRewardList)
 
-def AddDLCRewards():
+def AddDLCRewards(ChosenAreaOrder):
     BountyCollectionRewards = Helper.InclRange(1, 10)
     StartingDLCItemTextRow = Helper.GetMaxValue("./_internal/JsonOutputs/common_ms/menu_dlc_gift.json", "$id") + 1
     with open("./_internal/JsonOutputs/common/MNU_DlcGift.json", 'r+', encoding='utf-8') as file: #edits DLC items
@@ -1557,6 +1628,11 @@ def AddDLCRewards():
                     row["condition"] = 3904 + i
                     row["title"] = StartingDLCItemTextRow + i
                     break
+        if len(ChosenAreaOrder) != len(BountyCollectionRewards):
+            for i in range(len(ChosenAreaOrder), len(BountyCollectionRewards)):
+                for row in data["rows"]:
+                    if row["$id"] == BountyCollectionRewards[i]:
+                        row["condition"] = 3903
         del data["rows"][37:]
         file.seek(0)
         file.truncate()
@@ -1636,7 +1712,7 @@ def CustomShopSetup(): # Sets up the custom shops with loot
     TokenExchangeRewards = []
     for i in range(0, 10):
         TokenExchangeRewards.append([random.randint(2 + 4*i, 4 + 5*i)])
-    CoreCrystalCostDistribution = [4, 8, 12, 16, 4, 8, 12, 4, 8, 12, 20, 30, 40, 115, 125, 135]
+    CoreCrystalCostDistribution = [4, 8, 12, 16, 4, 8, 12, 4, 8, 12, 20, 30, 40, 130, 145, 160]
     ManualCostDistribution = [3, 6, 9, 20, 35, 9, 17, 33]
     ChipShopCostDistribution = Helper.ExtendListtoLength([1],16,"inputlist[i-1]+9")
     
@@ -1681,7 +1757,7 @@ def CustomShopSetup(): # Sets up the custom shops with loot
         "RewardIDs": Helper.InclRange(1282, 1291), # FLD_QuestReward $id, feeds into MNU_ShopChangeTask Reward
         "RewardItemIDs": [Helper.ExtendListtoLength([], 10, "25489"), TokenFillerList, TokenFillerList, TokenFillerList], # FLD_QuestReward ItemID1->4, item ids from ITM files, same number as RewardQtys
         "RewardQtys": [TokenExchangeRewards, TokenFillerList, TokenFillerList, TokenFillerList], # FLD_QuestReward ItemNumber1->4, 1 list for each ItemNumber, and number of items in each list equal to the number of InputTaskIDs
-        "RewardNames": ["Doubloons + EXP", "Doubloons + EXP + SP", "Doubloons + EXP + SP", "Doubloons + EXP + SP", "Doubloons + EXP + SP", "Doubloons + EXP + SP", "Doubloons + EXP + SP", "Doubloons + EXP + SP", "Doubloons + EXP + SP", "Doubloons + EXP + SP"], # names for items with IDs in FLD_QuestReward, as many items as non-zero InputTaskIDs
+        "RewardNames": ["Doubloons + SP", "Doubloons + EXP + SP", "Doubloons + EXP + SP", "Doubloons + EXP + SP", "Doubloons + EXP + SP", "Doubloons + EXP + SP", "Doubloons + EXP + SP", "Doubloons + EXP + SP", "Doubloons + EXP + SP", "Doubloons + EXP + SP"], # names for items with IDs in FLD_QuestReward, as many items as non-zero InputTaskIDs
         "RewardSP": [250, 375, 500, 625, 750, 875, 1000, 1250, 1500, 1750], #FLD_QuestReward Sp
         "RewardXP": [0, 630, 630, 630, 630, 630, 630, 630, 630, 630], # FLD_QuestReward EXP
         "HideReward": TokenFillerList # Whether or not to hide the reward, MNU_ShopChangeTask "HideReward"
@@ -1970,7 +2046,7 @@ def SecretShopMaker(ChosenAreaOrder): # Adds some secret shops in the areas of i
     Helper.ColumnAdjust("./_internal/JsonOutputs/common_gmk/ma07a_FLD_NpcPop.json", ["FSID1", "FSID2", "FSID3"], 0)
     ShopList = []
     for i in range(0, len(ChosenAreaOrder)):
-        MapValidNPCIDs = Helper.FindSubOptionValuesList("./_internal/JsonOutputs/common_gmk/" + ContinentInfo[ChosenAreaOrder[i]][2] + "_FLD_NpcPop.json", "flag", "Talkable", 1, "$id")
+        MapValidNPCIDs = [x for x in Helper.FindSubOptionValuesList("./_internal/JsonOutputs/common_gmk/" + ContinentInfo[ChosenAreaOrder[i]][2] + "_FLD_NpcPop.json", "flag", "Talkable", 1, "$id") if x not in InvalidMapNPCs]
         ChosenSecretNPCID = random.choice(MapValidNPCIDs)
         with open("./_internal/JsonOutputs/common_gmk/" + ContinentInfo[ChosenAreaOrder[i]][2] + "_FLD_NpcPop.json", 'r+', encoding='utf-8') as file: # Lets you rest in the Argentum Trade Guild Inn, but removes all other shops (we're adding them back after)
             data = json.load(file)
@@ -2019,7 +2095,7 @@ def SecretShopMaker(ChosenAreaOrder): # Adds some secret shops in the areas of i
             "HideReward": SecretEmptyFillerList # Whether or not to hide the reward, MNU_ShopChangeTask "HideReward"
         }
 
-        print(SecretShop["NPCID"])
+        #print(SecretShop["NPCID"])
 
         ShopList.append(SecretShop)
 

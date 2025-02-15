@@ -11,16 +11,16 @@ def DriverArtRandomizer():
     with open("./_internal/JsonOutputs/common/BTL_Arts_Dr.json", 'r+', encoding='utf-8') as artFile:
         artData = json.load(artFile)
         
-        isAutoAttacks = Options.DriverArtsOption_AutoAttacks.isOn()
-        isMultiReact = Options.DriverArtsOption_MultipleReactions.isOn()
-        isReactions = Options.DriverArtsOption_SingleReaction.isOn()
-        isCooldowns = Options.DriverArtsOption_Cooldown.isOn()
-        isDamage = Options.DriverArtsOption_Damage.isOn()
-        isEnhancements = Options.DriverArtsOption_Enhancements.isOn()
-        isBuffs = Options.DriverArtsOption_Buffs.isOn()
-        isDebuffs = Options.DriverArtsOption_Debuffs.isOn()
-        isAOE = Options.DriverArtsOption_AOE.isOn()
-        isSpeed = Options.DriverArtsOption_AnimationSpeed.isOn()
+        isAutoAttacks = Options.DriverArtsOption_AutoAttacks.GetState()
+        isMultiReact = Options.DriverArtsOption_MultipleReactions.GetState()
+        isReactions = Options.DriverArtsOption_SingleReaction.GetState()
+        isCooldowns = Options.DriverArtsOption_Cooldown.GetState()
+        isDamage = Options.DriverArtsOption_Damage.GetState()
+        isEnhancements = Options.DriverArtsOption_Enhancements.GetState()
+        isBuffs = Options.DriverArtsOption_Buffs.GetState()
+        isDebuffs = Options.DriverArtsOption_Debuffs.GetState()
+        isAOE = Options.DriverArtsOption_AOE.GetState()
+        isSpeed = Options.DriverArtsOption_AnimationSpeed.GetState()
         odds = Options.DriverArtsOption.GetOdds()
         
         for art in artData["rows"]:

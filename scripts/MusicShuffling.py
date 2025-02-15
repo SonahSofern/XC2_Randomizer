@@ -19,7 +19,7 @@ import random, Options
 # So then we keep CHR_EnArrange the same, and randomize the .wav files and place a set number of them into the IDs that work with CHR_EnArrange
 
 def MusicShuffle():
-    if Options.MusicOption_MixBattleAndEnv.isOn():
+    if Options.MusicOption_MixBattleAndEnv.GetState():
         JSONParser.ChangeJSONFile(["common/RSC_BgmList.json"], ["filename"], NonBattleMusicMOVs + EnemyBattleMusicMOVs, NonBattleMusicMOVs + EnemyBattleMusicMOVs)
     else:
         with open("./_internal/JsonOutputs/common/RSC_BgmList.json", 'r+', encoding='utf-8') as file:

@@ -81,11 +81,11 @@ def BugFixes_PreRandomization():
 
 def RandomizeBlades():
     # Determine the guaranteed healer, if specified
-    if Options.BladesOption_Healer.isOn():
+    if Options.BladesOption_Healer.GetState():
         global GuaranteedHealer
 
         # If Dromarch isn't randomized, he's the healer by default
-        if not Options.BladesOption_Dromarch.isOn():
+        if not Options.BladesOption_Dromarch.GetState():
             GuaranteedHealer = 1004
             if include_printouts:
                 print("The guaranteed healer is Dromarch (by default).")
@@ -101,7 +101,7 @@ def RandomizeBlades():
     blades_left_to_randomize = BladesAlwaysRandomized.copy()
 
     # Only add Dromarch to the pool if explicitly randomizing him
-    if Options.BladesOption_Dromarch.isOn():
+    if Options.BladesOption_Dromarch.GetState():
         blades_left_to_randomize = [1004] + blades_left_to_randomize
 
     # TODO: Re-add this once NG+ blades' weapon chips work properly
@@ -135,7 +135,7 @@ def RandomizeBlades():
 
 def canBeReplaced(original, replacement):
     # Handle the case of having the guaranteed healer
-    if Options.BladesOption_Healer.isOn():
+    if Options.BladesOption_Healer.GetState():
         if (original == 1001 and GuaranteedHealer in RexHealerBlades) or \
            (original == 1004 and GuaranteedHealer in NiaHealerBlades):
             return replacement == GuaranteedHealer
