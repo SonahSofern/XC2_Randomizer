@@ -3,7 +3,6 @@ from tkinter import *
 import tkinter as tk
 root = Tk()
 import Options
-
 import random, subprocess, shutil, os, threading, traceback, time, sys, PermalinkManagement, datetime
 import SavedOptions, SeedNames, JSONParser,  IDs,Helper
 from Enhancements import AddCustomEnhancements
@@ -11,7 +10,6 @@ import GUISettings
 from IDs import RootsForStyling, CanvasesForStyling
 from UI_Colors import *
 from tkinter.font import Font
-import tkinter as tk
 
 Version = "1.3.0"
 CommonBdatInput = ""
