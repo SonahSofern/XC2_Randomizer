@@ -6,9 +6,9 @@ import Options
 
 import random, subprocess, shutil, os, threading, traceback, time, sys, PermalinkManagement, datetime
 import SavedOptions, SeedNames, JSONParser,  IDs,Helper
-from Enhancements import *
+from Enhancements import AddCustomEnhancements
 import GUISettings
-from IDs import *
+from IDs import RootsForStyling, CanvasesForStyling
 from UI_Colors import *
 from tkinter.font import Font
 import tkinter as tk
@@ -22,6 +22,7 @@ windowHeight = "900"
 OptionColorLight = White
 OptionColorDark = Gray
 SavedOptionsFileName = f"SavedOptionsv{Version}.txt"
+
 if getattr(sys, 'frozen', False):  # If the app is running as a bundled executable
     isOnefile = True
 else:
